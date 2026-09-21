@@ -31,4 +31,15 @@ public class ContaCorrente extends Conta {
     protected boolean saquePermitido(BigDecimal valor) {
         return getSaldo().add(limite).compareTo(valor) >= 0;
     }
+
+    @Override
+    public BigDecimal aplicarJuros(BigDecimal taxa) {
+        validarTaxa(taxa);
+        if (getSaldo().signum() >= 0) {
+            throw new IllegalArgumentException("Juros podem ser aplicados somente sobre saldo negativo");
+        }
+        BigDecimal juros = getSaldo().abs().multiply(taxa).divide(BigDecimal.valueOf(100));
+        definirSaldo(getSaldo().subtract(juros));
+        return juros;
+    }
 }

@@ -2,6 +2,7 @@ package br.com.contabancaria.controller;
 
 import br.com.contabancaria.dto.request.ContaRequest;
 import br.com.contabancaria.dto.request.MovimentacaoRequest;
+import br.com.contabancaria.dto.request.TaxaRequest;
 import br.com.contabancaria.dto.response.ContaResponse;
 import br.com.contabancaria.dto.response.TransacaoResponse;
 import br.com.contabancaria.service.ContaService;
@@ -53,6 +54,18 @@ public class ContaController {
 	@PostMapping("/{id}/sacar")
 	public ResponseEntity<Void> sacar(@PathVariable Long id, @Valid @RequestBody MovimentacaoRequest request) {
 		service.sacar(id, request.getValor());
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/{id}/rendimento")
+	public ResponseEntity<Void> aplicarRendimento(@PathVariable Long id, @Valid @RequestBody TaxaRequest request) {
+		service.aplicarRendimento(id, request.getTaxa());
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/{id}/juros")
+	public ResponseEntity<Void> aplicarJuros(@PathVariable Long id, @Valid @RequestBody TaxaRequest request) {
+		service.aplicarJuros(id, request.getTaxa());
 		return ResponseEntity.ok().build();
 	}
 

@@ -11,7 +11,8 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
-    @ExceptionHandler({SaldoInsuficienteException.class, IllegalArgumentException.class})
+        @ExceptionHandler({SaldoInsuficienteException.class, IllegalArgumentException.class,
+            UnsupportedOperationException.class})
     public ResponseEntity<ApiError> handleBadRequest(RuntimeException exception) {
         return response(HttpStatus.BAD_REQUEST, exception.getMessage());
     }

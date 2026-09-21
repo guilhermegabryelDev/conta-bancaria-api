@@ -72,6 +72,10 @@ public abstract class Conta {
         return saldo;
     }
 
+    protected void definirSaldo(BigDecimal saldo) {
+        this.saldo = saldo;
+    }
+
     public void depositar(BigDecimal valor) {
         validarValor(valor);
         saldo = saldo.add(valor);
@@ -85,11 +89,25 @@ public abstract class Conta {
         saldo = saldo.subtract(valor);
     }
 
+    public BigDecimal aplicarRendimento(BigDecimal taxa) {
+        throw new UnsupportedOperationException("Rendimento nao disponivel para este tipo de conta");
+    }
+
+    public BigDecimal aplicarJuros(BigDecimal taxa) {
+        throw new UnsupportedOperationException("Juros nao disponivel para este tipo de conta");
+    }
+
     protected abstract boolean saquePermitido(BigDecimal valor);
 
     private void validarValor(BigDecimal valor) {
         if (valor == null || valor.signum() <= 0) {
             throw new IllegalArgumentException("O valor deve ser maior que zero");
+        }
+    }
+
+    protected void validarTaxa(BigDecimal taxa) {
+        if (taxa == null || taxa.signum() < 0) {
+            throw new IllegalArgumentException("A taxa deve ser maior ou igual a zero");
         }
     }
 

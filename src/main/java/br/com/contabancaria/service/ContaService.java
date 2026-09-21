@@ -75,6 +75,20 @@ public class ContaService {
 		registrarTransacao(conta, TipoTransacao.SAQUE, valor);
 	}
 
+	@Transactional
+	public void aplicarRendimento(Long contaId, BigDecimal taxa) {
+		Conta conta = buscarConta(contaId);
+		BigDecimal rendimento = conta.aplicarRendimento(taxa);
+		registrarTransacao(conta, TipoTransacao.RENDIMENTO, rendimento);
+	}
+
+	@Transactional
+	public void aplicarJuros(Long contaId, BigDecimal taxa) {
+		Conta conta = buscarConta(contaId);
+		BigDecimal juros = conta.aplicarJuros(taxa);
+		registrarTransacao(conta, TipoTransacao.JUROS, juros);
+	}
+
 	private Conta buscarConta(Long contaId) {
 		return buscar(Objects.requireNonNull(contaId, "O id da conta e obrigatorio"));
 	}

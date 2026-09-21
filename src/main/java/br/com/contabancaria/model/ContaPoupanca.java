@@ -18,4 +18,12 @@ public class ContaPoupanca extends Conta {
     protected boolean saquePermitido(BigDecimal valor) {
         return getSaldo().compareTo(valor) >= 0;
     }
+
+    @Override
+    public BigDecimal aplicarRendimento(BigDecimal taxa) {
+        validarTaxa(taxa);
+        BigDecimal rendimento = getSaldo().multiply(taxa).divide(BigDecimal.valueOf(100));
+        definirSaldo(getSaldo().add(rendimento));
+        return rendimento;
+    }
 }
