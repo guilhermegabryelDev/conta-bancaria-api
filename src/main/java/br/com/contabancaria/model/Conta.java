@@ -19,6 +19,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.contabancaria.exception.SaldoInsuficienteException;
+
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "tipo_conta")
@@ -70,8 +72,25 @@ public abstract class Conta {
         return saldo;
     }
 
-    public void setSaldo(BigDecimal saldo) {
-        this.saldo = saldo;
+    public void depositar(BigDecimal valor) {
+        validarValor(valor);
+        saldo = saldo.add(valor);
+    }
+
+    public void sacar(BigDecimal valor) {
+        validarValor(valor);
+        if (!saquePermitido(valor)) {
+            throw new SaldoInsuficienteException("Saldo insuficiente para realizar o saque");
+        }
+        saldo = saldo.subtract(valor);
+    }
+
+    protected abstract boolean saquePermitido(BigDecimal valor);
+
+    private void validarValor(BigDecimal valor) {
+        if (valor == null || valor.signum() <= 0) {
+            throw new IllegalArgumentException("O valor deve ser maior que zero");
+        }
     }
 
     public TipoConta getTipo() {
@@ -88,5 +107,9 @@ public abstract class Conta {
 
     public List<Transacao> getTransacoes() {
         return transacoes;
+    }
+
+    public void adicionarTransacao(Transacao transacao) {
+        transacoes.add(transacao);
     }
 }

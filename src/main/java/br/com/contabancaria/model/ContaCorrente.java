@@ -26,4 +26,9 @@ public class ContaCorrente extends Conta {
     public void setLimite(BigDecimal limite) {
         this.limite = limite;
     }
+
+    @Override
+    protected boolean saquePermitido(BigDecimal valor) {
+        return getSaldo().add(limite).compareTo(valor) >= 0;
+    }
 }
