@@ -68,54 +68,14 @@ ambiente ou por um gerenciador de segredos.
 
 ## Schema do banco
 
-Nesta versão não existe `schema.sql`. O schema é gerado pelo Hibernate a cada
-execução por `ddl-auto=create-drop`.
+O schema é definido no arquivo [`src/main/resources/schema.sql`](src/main/resources/schema.sql),
+executado automaticamente pelo Spring na inicialização com
+`spring.sql.init.mode=always`. O Hibernate não gera nem altera tabelas porque
+`spring.jpa.hibernate.ddl-auto=none` está configurado.
 
-O SQL conceitual equivalente é:
-
-```sql
-CREATE TABLE correntista (
-		id BIGINT AUTO_INCREMENT PRIMARY KEY,
-		nome VARCHAR(255) NOT NULL,
-		documento VARCHAR(255) NOT NULL UNIQUE,
-		email VARCHAR(255),
-		telefone VARCHAR(255),
-		endereco VARCHAR(255)
-);
-
-CREATE TABLE conta (
-		id BIGINT AUTO_INCREMENT PRIMARY KEY,
-		numero VARCHAR(255) NOT NULL UNIQUE,
-		saldo DECIMAL(15, 2) NOT NULL,
-		tipo VARCHAR(255) NOT NULL,
-		correntista_id BIGINT NOT NULL,
-		FOREIGN KEY (correntista_id) REFERENCES correntista(id)
-);
-
-CREATE TABLE conta_corrente (
-		id BIGINT PRIMARY KEY,
-		limite DECIMAL(15, 2) NOT NULL,
-		FOREIGN KEY (id) REFERENCES conta(id)
-);
-
-CREATE TABLE conta_poupanca (
-		id BIGINT PRIMARY KEY,
-		FOREIGN KEY (id) REFERENCES conta(id)
-);
-
-CREATE TABLE transacao (
-		id BIGINT AUTO_INCREMENT PRIMARY KEY,
-		tipo VARCHAR(255) NOT NULL,
-		valor DECIMAL(15, 2) NOT NULL,
-		data TIMESTAMP NOT NULL,
-		conta_origem_id BIGINT NOT NULL,
-		FOREIGN KEY (conta_origem_id) REFERENCES conta(id)
-);
-```
-
-Os nomes e detalhes de tipos podem variar conforme o dialeto do banco e a
-versão do Hibernate; em produção, o ideal é substituir `ddl-auto` por uma
-ferramenta de migração, como Flyway ou Liquibase.
+O arquivo contém as tabelas da herança `JOINED` (`conta`, `conta_corrente` e
+`conta_poupanca`), as tabelas de correntistas e transações e suas constraints de
+chave estrangeira, obrigatoriedade e unicidade.
 
 ## Endpoints
 
